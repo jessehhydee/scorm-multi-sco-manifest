@@ -1,0 +1,16 @@
+{
+  "name": "scorm-multi-sco-manifest",
+  "version": "1.0.0",
+  "description": "Create XML manifest for SCORM containing multiple SCOs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scorm",
+    "manifest",
+    "sco"
+  ],
+  "author": "Jesse Hyde",
+  "license": "ISC"
+}
