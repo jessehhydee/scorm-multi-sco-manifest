@@ -12,5 +12,8 @@
     "sco"
   ],
   "author": "Jesse Hyde",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "xmlbuilder2": "^3.0.2"
+  }
 }
