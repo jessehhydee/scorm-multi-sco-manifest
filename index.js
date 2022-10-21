@@ -1,12 +1,13 @@
 const { create }  = require('xmlbuilder2');
 const fs          = require('fs');
+const zip         = require('zip-a-folder');
 
 const json    = fs.readFileSync('./scorm.manifest.json');
 const config  = JSON.parse(json);
 
 const dir     = fs.readdirSync(`${config.buildDir}`);
 
-console.log(`Creating: ${config.manifestOptions.fileName}`)
+console.log(`Creating: ${config.manifestOptions.fileName}`);
 
 const createResource = () => {
 
@@ -88,13 +89,22 @@ const createDocu = () => {
     prettyPrint: true
   });
 
-  return xml;
+  fs.writeFileSync(
+    `${config.buildDir}/${config.manifestOptions.fileName}`,
+    xml
+    );
+
+  console.log(`Created: ${config.manifestOptions.fileName}`);
 
 }
 
-fs.writeFileSync(
-  `${config.buildDir}/${config.manifestOptions.fileName}`,
-  createDocu()
-  );
+const zipBuild = async () => {
 
-console.log(`Created: ${config.manifestOptions.fileName}`)
+  await zip(`${config.buildDir}/`, config.archiveDir);
+  console.log(`Zipped: ${config.archiveDir}`);
+
+}
+
+createDocu();
+if(config.zip) zipBuild();
+

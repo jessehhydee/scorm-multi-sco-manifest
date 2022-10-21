@@ -18,6 +18,7 @@
   "author": "Jesse Hyde",
   "license": "MIT",
   "dependencies": {
-    "xmlbuilder2": "^3.0.2"
+    "xmlbuilder2": "^3.0.2",
+    "zip-a-folder": "^1.1.5"
   }
 }
