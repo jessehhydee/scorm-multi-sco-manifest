@@ -5,31 +5,39 @@ const zip         = require('zip-a-folder');
 const json    = fs.readFileSync('./scorm.manifest.json');
 const config  = JSON.parse(json);
 
-const dir     = fs.readdirSync(`${config.buildDir}`);
-
 console.log(`Creating: ${config.manifestOptions.fileName}`);
 
 const createResource = () => {
 
-  const resourse =
+  const resources = 
     create()
-      .ele('resource', {
-        identifier:         'resource_1',
-        type:               'webcontent',
-        href:               'sco',
-        'adlcp:scormtype':  config.manifestOptions.launchPage
-      });
+      .ele('resources');
 
-      dir.forEach(el => {
-        resourse.ele('file', {
-          href: el
-        })
-        .up();
-      })
+        config.manifestOptions.items.forEach(el => {
 
-    resourse.up()
+          const buildir = fs.readdirSync(`${config.buildsDir}/${el.buildDirName}`);
 
-  return resourse;
+          resources.ele('resource', {
+            identifier:         `${el.buildDirName.toLowerCase()}-resource`,
+            type:               'webcontent',
+            href:               'sco',
+            'adlcp:scormtype':  el.index
+          });
+    
+            buildir.forEach(el => {
+              resources.ele('file', {
+                href: el
+              })
+              .up();
+            })
+    
+          resources.up()
+
+        });
+
+      resources.up();
+
+  return resources;
 
 }
 
@@ -44,10 +52,13 @@ const createDocu = () => {
     .ele('manifest', {
       identifier:           config.manifestOptions.courseId,
       version:              '1',
-      xmlns:                'http://www.imsproject.org/xsd/imscp_rootv1p1p2',
-      'xmlns:adlcp':        'http://www.adlnet.org/xsd/adlcp_rootv1p2',
+      xmlns:                'http://www.imsglobal.org/xsd/imscp_v1p1',
+      'xmlns:adlcp':        'http://www.adlnet.org/xsd/adlcp_v1p3',
+      'xmlns:adlseq':       'http://www.adlnet.org/xsd/adlseq_v1p3',
       'xmlns:xsi':          'http://www.w3.org/2001/XMLSchema-instance',
-      'xsi:schemaLocation': 'http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd'
+      'xmlns:adlnav':       'http://www.adlnet.org/xsd/adlnav_v1p3',
+      'xmlns:imsss':        'http://www.imsglobal.org/xsd/imsss',
+      'xsi:schemaLocation': 'http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd'
     })
       .ele('metadata')
         .ele('schema')
@@ -68,20 +79,51 @@ const createDocu = () => {
             .up();
             
           config.manifestOptions.items.forEach(el => {
+
             docu.ele('item', {
-              identifier:     el.identifier,
-              identifierref:  'resource_1'
+              identifier:     el.buildDirName.toLowerCase(),
+              identifierref:  `${el.buildDirName.toLowerCase()}-resource`
             })
               .ele('title')
-                .txt(el.moduleTitle)
+                .txt(`${el.buildDirName.toUpperCase()}`)
+              .up()
+              .ele('imsss:sequencing', {
+                IDRef: 'common_seq_rules'
+              })
+                .ele('imsss:objectives')
+                  .ele('imsss:primaryObjective', {
+                    objectiveID: `${el.buildDirName.toLowerCase()}-satisfied`
+                  })
+                    .ele('imsss:mapInfo', {
+                      targetObjectiveID:    `com.scorm.sequencing.forcedsequential.${el.buildDirName.toLowerCase()}-satisfied`,
+                      readSatisfiedStatus:  'true',
+                      writeSatisfiedStatus: 'true'
+                    })
+                    .up()
+                  .up()
+                .up()
               .up()
             .up();
+
           });
 
           docu.up()
       .up()
-      .ele('resources')
-        .import(createResource())
+      .import(createResource())
+      .ele('imsss:sequencingCollection')
+        .ele('imsss:sequencing', {
+          ID: 'common_seq_rules'
+        })
+          .ele('imsss:rollupRules', {
+            objectiveMeasureWeight: '0'
+          })
+          .up()
+          .ele('imsss:deliveryControls', {
+            completionSetByContent: 'true',
+            objectiveSetByContent:  'true'
+          })
+          .up()
+        .up()
       .up()
     .up();
 
@@ -90,7 +132,7 @@ const createDocu = () => {
   });
 
   fs.writeFileSync(
-    `${config.buildDir}/${config.manifestOptions.fileName}`,
+    `${config.buildsDir}/${config.manifestOptions.fileName}`,
     xml
     );
 
@@ -100,7 +142,7 @@ const createDocu = () => {
 
 const zipBuild = async () => {
 
-  await zip(`${config.buildDir}/`, config.archiveDir);
+  await zip(`${config.buildsDir}/`, config.archiveDir);
   console.log(`Zipped: ${config.archiveDir}`);
 
 }

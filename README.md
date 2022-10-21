@@ -28,7 +28,7 @@ Each element in 'items' refers to a SCO within your project.
 
 ``` json
 {
-  "buildDir":   "./dist/",
+  "buildsDir":  "./dist/",
   "zip":        true,
   "archiveDir": "./archive/Example_Course_1.0.0.zip", // only required if zip: true
   "manifestOptions": {
@@ -36,16 +36,15 @@ Each element in 'items' refers to a SCO within your project.
     "SCORMtitle": "Example_Course_1.0.0",
     "items": [
       {
-        "identifier":  "sco-a",
-        "moduleTitle": "SCO-A"
+        "buildDirName":   "sco-a",
+        "index":          "index-sco-a.html"
       },
       {
-        "identifier":  "sco-b",
-        "moduleTitle": "SCO-B"
+        "buildDirName":   "sco-b",
+        "index":          "index-sco-b.html"
       }
     ],
-    "launchPag": "index.html",
-    "fileName":  "imsmanifest.xml"
+    "fileName":   "imsmanifest.xml"
   }
 }
 ```
