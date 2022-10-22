@@ -7,6 +7,62 @@ const config  = JSON.parse(json);
 
 console.log(`Creating: ${config.manifestOptions.fileName}`);
 
+const createSequencingRules = (index) => {
+
+  if(index === 0) return create().ele('');
+
+  const rules =
+    create()
+      .ele('imsss:sequencingRules')
+        .ele('imsss:preConditionRule')
+          .ele('imsss:ruleConditions', {
+            conditionCombination: 'any'
+          })
+            .ele('imsss:ruleCondition', {
+              referencedObjective:  'previous_sco_satisfied',
+              operator:             'not',
+              condition:            'satisfied'
+            })
+            .up()
+            .ele('imsss:ruleCondition', {
+              referencedObjective:  'previous_sco_satisfied',
+              operator:             'not',
+              condition:            'objectiveStatusKnown'
+            })
+            .up()
+          .up()
+          .ele('imsss:ruleAction', {
+            action: 'disabled'
+          })
+          .up()
+        .up()
+      .up();
+
+    return rules;
+
+}
+
+const createPreviousSCOObjective = (index) => {
+
+  if(index === 0) return create().ele('');
+
+  const objective =
+    create()
+      .ele('imsss:objective', {
+        objectiveID: 'previous_sco_satisfied'
+      })
+        .ele('imsss:mapInfo', {
+          targetObjectiveID:    `com.scorm.sequencing.forcedsequential.${config.manifestOptions.items[index - 1].buildDirName.toLowerCase()}-satisfied`,
+          readSatisfiedStatus:  'true',
+          writeSatisfiedStatus: 'false'
+        })
+        .up()
+      .up();
+
+  return objective;
+
+}
+
 const createResource = () => {
 
   const resources = 
@@ -78,7 +134,7 @@ const createDocu = () => {
             .txt(config.manifestOptions.SCORMtitle)
             .up();
             
-          config.manifestOptions.items.forEach(el => {
+          config.manifestOptions.items.forEach((el, i) => {
 
             docu.ele('item', {
               identifier:     el.buildDirName.toLowerCase(),
@@ -90,6 +146,7 @@ const createDocu = () => {
               .ele('imsss:sequencing', {
                 IDRef: 'common_seq_rules'
               })
+                .import(createSequencingRules(i))
                 .ele('imsss:objectives')
                   .ele('imsss:primaryObjective', {
                     objectiveID: `${el.buildDirName.toLowerCase()}-satisfied`
@@ -101,13 +158,21 @@ const createDocu = () => {
                     })
                     .up()
                   .up()
+                  .import(createPreviousSCOObjective(i))
                 .up()
               .up()
             .up();
 
           });
 
-          docu.up()
+          docu.ele('imsss:sequencing')
+            .ele('imsss:controlMode', {
+              choice: 'true',
+              flow:   'true'
+            })
+            .up()
+          .up()
+        .up()
       .up()
       .import(createResource())
       .ele('imsss:sequencingCollection')
