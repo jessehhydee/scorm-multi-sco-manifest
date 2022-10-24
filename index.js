@@ -73,12 +73,12 @@ const createFiles = (sco) => {
         identifier:         `${sco.buildDirName.toLowerCase()}-resource`,
         type:               'webcontent',
         href:               'sco',
-        'adlcp:scormtype':  sco.index
+        'adlcp:scormtype':  `${sco.buildDirName}/${sco.index}`
       });
 
         buildDir.forEach(el => {
           files.ele('file', {
-            href: el
+            href: `${sco.buildDirName}/${el}`
           })
           .up();
         })
