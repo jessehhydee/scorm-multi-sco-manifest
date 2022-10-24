@@ -34,7 +34,11 @@ Each element in 'items' refers to a SCO within your project.
   "manifestOptions": {
     "courseId":   "Example_Course_1.0.0",
     "SCORMtitle": "Example_Course_1.0.0",
-    "items": [
+    "SCORMParent":  {
+      "buildDirName": "parent",
+      "index":        "index.html"
+    },
+    "SCOs": [
       {
         "buildDirName":   "sco-a",
         "index":          "index-sco-a.html"

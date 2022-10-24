@@ -52,7 +52,7 @@ const createPreviousSCOObjective = (index) => {
         objectiveID: 'previous_sco_satisfied'
       })
         .ele('imsss:mapInfo', {
-          targetObjectiveID:    `com.scorm.sequencing.forcedsequential.${config.manifestOptions.items[index - 1].buildDirName.toLowerCase()}-satisfied`,
+          targetObjectiveID:    `com.scorm.sequencing.forcedsequential.${config.manifestOptions.SCOs[index - 1].buildDirName.toLowerCase()}-satisfied`,
           readSatisfiedStatus:  'true',
           writeSatisfiedStatus: 'false'
         })
@@ -63,27 +63,56 @@ const createPreviousSCOObjective = (index) => {
 
 }
 
-const createFiles = (sco) => {
+const createFiles = (sco, howManyMoreResources) => {
 
+  let files;
   const buildDir = fs.readdirSync(`${config.buildsDir}/${sco.buildDirName}`);
 
-  const files =
-    create()
-      .ele('resource', {
-        identifier:         `${sco.buildDirName.toLowerCase()}-resource`,
-        type:               'webcontent',
-        href:               'sco',
-        'adlcp:scormtype':  `${sco.buildDirName}/${sco.index}`
-      });
+  if(howManyMoreResources === 0) {
 
-        buildDir.forEach(el => {
-          files.ele('file', {
-            href: `${sco.buildDirName}/${el}`
+    files =
+      create()
+        .ele('resource', {
+          identifier:         'common_files',
+          type:               'webcontent',
+          'adlcp:scormtype':  'asset'
+        });
+
+          buildDir.forEach(el => {
+            files.ele('file', {
+              href: `${sco.buildDirName}/${el}`
+            })
+            .up();
           })
-          .up();
-        })
 
-      files.up();
+        files.up();
+
+  }
+  else {
+
+    files =
+      create()
+        .ele('resource', {
+          identifier:         `${sco.buildDirName.toLowerCase()}-resource`,
+          type:               'webcontent',
+          href:               'sco',
+          'adlcp:scormtype':  `${sco.buildDirName}/${sco.index}`
+        });
+
+          buildDir.forEach(el => {
+            files.ele('file', {
+              href: `${sco.buildDirName}/${el}`
+            })
+            .up();
+          })
+
+          files.ele('dependency', {
+            identifierref: 'common_files'
+          })
+          .up()
+        .up();
+
+  }
 
   return files;
 
@@ -91,12 +120,15 @@ const createFiles = (sco) => {
 
 const createResources = () => {
 
+  const resourceItems = [...config.manifestOptions.SCOs];
+  resourceItems.push(config.manifestOptions.SCORMParent);
+
   const resources = 
     create()
       .ele('resources');
 
-        config.manifestOptions.items.forEach(el => {
-          resources.import(createFiles(el));
+        resourceItems.forEach((el, i) => {
+          resources.import(createFiles(el, resourceItems.length - (i + 1)));
         });
 
       resources.up();
@@ -142,7 +174,7 @@ const createDocu = () => {
             .txt(config.manifestOptions.SCORMtitle)
             .up();
             
-          config.manifestOptions.items.forEach((el, i) => {
+          config.manifestOptions.SCOs.forEach((el, i) => {
 
             docu.ele('item', {
               identifier:     el.buildDirName.toLowerCase(),
