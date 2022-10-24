@@ -1,6 +1,6 @@
 const { create }  = require('xmlbuilder2');
 const fs          = require('fs');
-const zip         = require('zip-a-folder');
+const { zip }     = require('zip-a-folder');
 
 const json    = fs.readFileSync('./scorm.manifest.json');
 const config  = JSON.parse(json);
@@ -63,32 +63,40 @@ const createPreviousSCOObjective = (index) => {
 
 }
 
-const createResource = () => {
+const createFiles = (sco) => {
+
+  const buildDir = fs.readdirSync(`${config.buildsDir}/${sco.buildDirName}`);
+
+  const files =
+    create()
+      .ele('resource', {
+        identifier:         `${sco.buildDirName.toLowerCase()}-resource`,
+        type:               'webcontent',
+        href:               'sco',
+        'adlcp:scormtype':  sco.index
+      });
+
+        buildDir.forEach(el => {
+          files.ele('file', {
+            href: el
+          })
+          .up();
+        })
+
+      files.up();
+
+  return files;
+
+}
+
+const createResources = () => {
 
   const resources = 
     create()
       .ele('resources');
 
         config.manifestOptions.items.forEach(el => {
-
-          const buildir = fs.readdirSync(`${config.buildsDir}/${el.buildDirName}`);
-
-          resources.ele('resource', {
-            identifier:         `${el.buildDirName.toLowerCase()}-resource`,
-            type:               'webcontent',
-            href:               'sco',
-            'adlcp:scormtype':  el.index
-          });
-    
-            buildir.forEach(el => {
-              resources.ele('file', {
-                href: el
-              })
-              .up();
-            })
-    
-          resources.up()
-
+          resources.import(createFiles(el));
         });
 
       resources.up();
@@ -174,7 +182,7 @@ const createDocu = () => {
           .up()
         .up()
       .up()
-      .import(createResource())
+      .import(createResources())
       .ele('imsss:sequencingCollection')
         .ele('imsss:sequencing', {
           ID: 'common_seq_rules'
@@ -206,6 +214,12 @@ const createDocu = () => {
 }
 
 const zipBuild = async () => {
+
+  archiveDirPath = config.archiveDir.split('/');
+  archiveDirPath.pop();
+  archiveDirPath = archiveDirPath.join('/');
+
+  if (!fs.existsSync(archiveDirPath)) fs.mkdirSync(archiveDirPath);
 
   await zip(`${config.buildsDir}/`, config.archiveDir);
   console.log(`Zipped: ${config.archiveDir}`);
