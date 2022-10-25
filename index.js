@@ -9,7 +9,7 @@ console.log(`Creating: ${config.manifestOptions.fileName}`);
 
 const createSequencingRules = (index) => {
 
-  if(index === 0) return create().ele('');
+  if(index === 0) return create().ele('ex');
 
   const rules =
     create()
@@ -44,7 +44,7 @@ const createSequencingRules = (index) => {
 
 const createPreviousSCOObjective = (index) => {
 
-  if(index === 0) return create().ele('');
+  if(index === 0) return create().ele('ex');
 
   const objective =
     create()
