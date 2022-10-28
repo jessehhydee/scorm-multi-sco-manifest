@@ -1,6 +1,6 @@
 {
   "name": "scorm-multi-sco-manifest",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Create XML manifest for SCORM containing multiple SCOs",
   "main": "index.js",
   "scripts": {

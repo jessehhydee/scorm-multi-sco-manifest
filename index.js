@@ -95,8 +95,8 @@ const createFiles = (sco, howManyMoreResources) => {
         .ele('resource', {
           identifier:         `${sco.buildDirName.toLowerCase()}-resource`,
           type:               'webcontent',
-          href:               'sco',
-          'adlcp:scormtype':  `${sco.buildDirName}/${sco.index}`
+          'adlcp:scormtype':  'sco',
+          href:               `${config.manifestOptions.SCORMParent.buildDirName}/${config.manifestOptions.SCORMParent.index}?content=${sco.buildDirName}&file=${sco.index}`
         });
 
           buildDir.forEach(el => {

@@ -40,17 +40,28 @@ Each element in 'items' refers to a SCO within your project.
     },
     "SCOs": [
       {
-        "buildDirName":   "sco-a",
-        "index":          "index-sco-a.html"
+        "buildDirName": "sco-a",
+        "index":        "index-sco-a.html"
       },
       {
-        "buildDirName":   "sco-b",
-        "index":          "index-sco-b.html"
+        "buildDirName": "sco-b",
+        "index":        "index-sco-b.html"
       }
     ],
-    "fileName":   "imsmanifest.xml"
+    "fileName": "imsmanifest.xml"
   }
 }
+```
+
+This package expects your SCO's to be presented within an iFrame held in your SCORM parent. Your SCORM parent must interpret two URL params in order to receive the iFrames source.
+<ol>
+<li>content</li>
+<li>file</li>
+</ol>
+Your iFrames src will look like this:
+
+``` js
+this.scoUrl = `../${params['content']}/${params['file']}`;
 ```
 
 Run `npm run-script build` to create `imsmanifest.xml` file in your `./dist/` directory.
