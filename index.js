@@ -295,7 +295,7 @@ const createSingleSCODocu = () => {
           identifier:         `${config.manifestOptions.SCOs[0].buildDirName.toLowerCase()}-resource`,
           type:               'webcontent',
           'adlcp:scormtype':  'sco',
-          href:               `${config.manifestOptions.SCOs[0].buildDirName}/${config.manifestOptions.SCORMParent.index}`
+          href:               `${config.manifestOptions.SCOs[0].buildDirName}/${config.manifestOptions.SCOs[0].index}`
         });
 
           buildDir.forEach(el => {
