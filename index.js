@@ -232,16 +232,7 @@ const createMultiSCODocu = () => {
       .up()
     .up();
 
-  const xml = docu.end({
-    prettyPrint: true
-  });
-
-  fs.writeFileSync(
-    `${config.buildsDir}/imsmanifest.xml`,
-    xml
-    );
-
-  console.log(`Created: imsmanifest.xml`);
+  createManifest(docu);
 
 }
 
@@ -308,6 +299,12 @@ const createSingleSCODocu = () => {
         docu.up()
       .up()
     .up();
+
+  createManifest(docu);
+
+}
+
+const createManifest = (docu) => {
 
   const xml = docu.end({
     prettyPrint: true
