@@ -5,7 +5,7 @@ const { zip }     = require('zip-a-folder');
 const json    = fs.readFileSync('./scorm.manifest.json');
 const config  = JSON.parse(json);
 
-console.log(`Creating: ${config.manifestOptions.fileName}`);
+console.log(`Creating: imsmanifest.xml`);
 
 const createSequencingRules = (index) => {
 
@@ -237,11 +237,11 @@ const createMultiSCODocu = () => {
   });
 
   fs.writeFileSync(
-    `${config.buildsDir}/${config.manifestOptions.fileName}`,
+    `${config.buildsDir}/imsmanifest.xml`,
     xml
     );
 
-  console.log(`Created: ${config.manifestOptions.fileName}`);
+  console.log(`Created: imsmanifest.xml`);
 
 }
 
@@ -314,11 +314,11 @@ const createSingleSCODocu = () => {
   });
 
   fs.writeFileSync(
-    `${config.buildsDir}/${config.manifestOptions.fileName}`,
+    `${config.buildsDir}/imsmanifest.xml`,
     xml
     );
 
-  console.log(`Created: ${config.manifestOptions.fileName}`);
+  console.log(`Created: imsmanifest.xml`);
 
 }
 

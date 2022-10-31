@@ -44,8 +44,7 @@ Each element in 'items' refers to a SCO within your project.
         "buildDirName": "sco-b",
         "index":        "index-sco-b.html"
       }
-    ],
-    "fileName": "imsmanifest.xml"
+    ]
   }
 }
 ```
