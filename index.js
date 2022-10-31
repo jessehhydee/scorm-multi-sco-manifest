@@ -137,7 +137,7 @@ const createResources = () => {
 
 }
 
-const createDocu = () => {
+const createMultiSCODocu = () => {
 
   const docu = 
   create({
@@ -245,6 +245,83 @@ const createDocu = () => {
 
 }
 
+const createSingleSCODocu = () => {
+
+  const buildDir = fs.readdirSync(`${config.buildsDir}/${config.manifestOptions.SCOs[0].buildDirName}`);
+
+  const docu = 
+  create({
+    version:    '1.0', 
+    encoding:   'UTF-8', 
+    standalone: 'yes'
+  })
+    .ele('manifest', {
+      identifier:           config.manifestOptions.courseId,
+      version:              '1',
+      xmlns:                'http://www.imsproject.org/xsd/imscp_rootv1p1p2',
+      'xmlns:adlcp':        'http://www.adlnet.org/xsd/adlcp_rootv1p2',
+      'xmlns:xsi':          'http://www.w3.org/2001/XMLSchema-instance',
+      'xsi:schemaLocation': 'http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd'
+    })
+      .ele('metadata')
+        .ele('schema')
+          .txt('ADL SCORM')
+          .up()
+        .ele('schemaversion')
+          .txt('1.2')
+          .up()
+      .up()
+      .ele('organizations', {
+        default: `${config.manifestOptions.courseId}-org`
+      })
+        .ele('organization', {
+          identifier: `${config.manifestOptions.courseId}-org`
+        })
+          .ele('title')
+            .txt(config.manifestOptions.SCORMtitle)
+          .up()
+          .ele('item', {
+            identifier:     config.manifestOptions.SCOs[0].buildDirName.toLowerCase(),
+            identifierref:  `${config.manifestOptions.SCOs[0].buildDirName.toLowerCase()}-resource`
+          })
+            .ele('title')
+              .txt(`${config.manifestOptions.SCOs[0].buildDirName.toUpperCase()}`)
+            .up()
+          .up()
+        .up()
+      .up()
+      .ele('resources')
+        .ele('resource', {
+          identifier:         `${config.manifestOptions.SCOs[0].buildDirName.toLowerCase()}-resource`,
+          type:               'webcontent',
+          'adlcp:scormtype':  'sco',
+          href:               `${config.manifestOptions.SCOs[0].buildDirName}/${config.manifestOptions.SCORMParent.index}`
+        });
+
+          buildDir.forEach(el => {
+            docu.ele('file', {
+              href: `${config.manifestOptions.SCOs[0].buildDirName}/${el}`
+            })
+            .up();
+          })
+
+        docu.up()
+      .up()
+    .up();
+
+  const xml = docu.end({
+    prettyPrint: true
+  });
+
+  fs.writeFileSync(
+    `${config.buildsDir}/${config.manifestOptions.fileName}`,
+    xml
+    );
+
+  console.log(`Created: ${config.manifestOptions.fileName}`);
+
+}
+
 const zipBuild = async () => {
 
   archiveDirPath = config.archiveDir.split('/');
@@ -258,6 +335,8 @@ const zipBuild = async () => {
 
 }
 
-createDocu();
+if(config.manifestOptions.SCOs.length > 1) createMultiSCODocu();
+else createSingleSCODocu();
+
 if(config.zip) zipBuild();
 

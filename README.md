@@ -10,9 +10,6 @@ npm install scorm-multi-sco-manifest
 
 This script creates a `imsmanifest.xml` file in your `./dist/` directory as per SCORM requirements.
 
-DISCLAIMER:
-Built for SCORM version 1.2 - not SCORM 2004.
-
 ### Usage
 
 Add the following to your `package.json` build script:
@@ -30,15 +27,15 @@ Each element in 'items' refers to a SCO within your project.
 {
   "buildsDir":  "./dist/",
   "zip":        true,
-  "archiveDir": "./archive/Example_Course_1.0.0.zip", // only required if zip: true
+  "archiveDir": "./archive/Example_Course_1.0.0.zip",   // only required if zip: true
   "manifestOptions": {
     "courseId":   "Example_Course_1.0.0",
     "SCORMtitle": "Example_Course_1.0.0",
-    "SCORMParent":  {
+    "SCORMParent":  {   // only required if project uses multiple SCO's
       "buildDirName": "parent",
       "index":        "index.html"
     },
-    "SCOs": [
+    "SCOs": [   // File output differs depending on if you list multiple SCO's or a single SCO below
       {
         "buildDirName": "sco-a",
         "index":        "index-sco-a.html"
@@ -53,6 +50,11 @@ Each element in 'items' refers to a SCO within your project.
 }
 ```
 
+Run `npm run-script build` to create `imsmanifest.xml` file in your `./dist/` directory.
+
+
+
+If your project contains multiple SCO's:
 This package expects your SCO's to be presented within an iFrame held in your SCORM parent. Your SCORM parent must interpret two URL params in order to receive the iFrames source.
 <ol>
 <li>content</li>
@@ -63,5 +65,3 @@ Your iFrames src will look like this:
 ``` js
 this.scoUrl = `../${params['content']}/${params['file']}`;
 ```
-
-Run `npm run-script build` to create `imsmanifest.xml` file in your `./dist/` directory.
