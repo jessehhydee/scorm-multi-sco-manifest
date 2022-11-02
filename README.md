@@ -29,8 +29,9 @@ Each element in 'items' refers to a SCO within your project.
   "zip":        true,
   "archiveDir": "./archive/Example_Course_1.0.0.zip",   // only required if zip: true
   "manifestOptions": {
-    "courseId":   "Example_Course_1.0.0",
-    "SCORMtitle": "Example_Course_1.0.0",
+    "SCORMVersion": "1.2",   // '1.2', '2004 3rd Edition', '2004 4th Edition'
+    "courseId":     "Example_Course_1.0.0",
+    "SCORMTitle":   "Example_Course_1.0.0",
     "SCORMParent":  {   // only required if project uses multiple SCO's
       "buildDirName": "parent",
       "index":        "index.html"

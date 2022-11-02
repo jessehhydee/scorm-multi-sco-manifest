@@ -171,7 +171,7 @@ const createMultiSCODocu = () => {
           identifier: `${config.manifestOptions.courseId}-org`
         })
           .ele('title')
-            .txt(config.manifestOptions.SCORMtitle)
+            .txt(config.manifestOptions.SCORMTitle)
             .up();
             
           config.manifestOptions.SCOs.forEach((el, i) => {
@@ -259,7 +259,7 @@ const createSingleSCODocu = () => {
           .txt('ADL SCORM')
           .up()
         .ele('schemaversion')
-          .txt('1.2')
+          .txt(`${config.manifestOptions.SCORMVersion}`)
           .up()
       .up()
       .ele('organizations', {
@@ -269,7 +269,7 @@ const createSingleSCODocu = () => {
           identifier: `${config.manifestOptions.courseId}-org`
         })
           .ele('title')
-            .txt(config.manifestOptions.SCORMtitle)
+            .txt(config.manifestOptions.SCORMTitle)
           .up()
           .ele('item', {
             identifier:     config.manifestOptions.SCOs[0].buildDirName.toLowerCase(),
