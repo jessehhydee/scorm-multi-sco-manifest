@@ -27,19 +27,30 @@ Each element in 'items' refers to a SCO within your project.
 {
   "buildsDir":  "./dist/",
   "zip":        true,
-  "archiveDir": "./archive/Example_Course_1.0.0.zip",   // only required if zip: true
+  "archiveDir": "./archive/Example_Course_1.0.0.zip",   // Only required if zip: true
   "manifestOptions": {
     "SCORMVersion": "1.2",   // '1.2', '2004 3rd Edition', '2004 4th Edition'
     "courseId":     "Example_Course_1.0.0",
     "SCORMTitle":   "Example_Course_1.0.0",
-    "SCORMParent":  {   // only required if project uses multiple SCO's
+    "SCORMParent":  {   // Only required if project uses multiple SCO's
       "buildDirName": "parent",
       "index":        "index.html"
     },
     "SCOs": [   // File output differs depending on if you list multiple SCO's or a single SCO below
       {
         "buildDirName": "sco-a",
-        "index":        "index-sco-a.html"
+        "index":        "index-sco-a.html",
+        "objectives":   [   // Creates Metadata outlining each objective - do not add if not needed
+          {
+            "description": "This objective is the first objective within sco-a"
+          },
+          {
+            "description": "This objective is the second objective within sco-a"
+          },
+          {
+            "description": "This objective is the third objective within sco-a"
+          }
+        ]
       },
       {
         "buildDirName": "sco-b",
