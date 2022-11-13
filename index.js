@@ -7,9 +7,51 @@ const config  = JSON.parse(json);
 
 console.log(`Creating: imsmanifest.xml`);
 
+const createObjectives = (objectives) => {
+
+  if(!objectives) return create().ele('filler');
+
+  const objectiveXML =
+    create().ele('objectives');
+
+  objectives.forEach(el => {
+
+    objectiveXML
+    .ele('classification')
+      .ele('purpose')
+        .ele('source')
+          .ele('langstring', {
+            'xml:lang': 'x-none'
+          })
+            .txt('LOMv1.0')
+          .up()
+        .up()
+        .ele('value')
+          .ele('langstring', {
+            'xml:lang': 'x-none'
+          })
+            .txt('Educational Objective')
+          .up()
+        .up()
+      .up()
+      .ele('description')
+        .ele('langstring')
+          .txt(el.description)
+        .up()
+      .up()
+    .up();
+
+  });
+
+  objectiveXML.up();
+
+  return objectiveXML;
+
+}
+
 const createSequencingRules = (index) => {
 
-  if(index === 0) return create().ele('ex');
+  if(index === 0) return create().ele('filler');
 
   const rules =
     create()
@@ -44,7 +86,7 @@ const createSequencingRules = (index) => {
 
 const createPreviousSCOObjective = (index) => {
 
-  if(index === 0) return create().ele('ex');
+  if(index === 0) return create().ele('filler');
 
   const objective =
     create()
@@ -183,6 +225,7 @@ const createMultiSCODocu = () => {
               .ele('title')
                 .txt(`${el.buildDirName.toUpperCase()}`)
               .up()
+              .import(createObjectives(el.objectives))
               .ele('imsss:sequencing', {
                 IDRef: 'common_seq_rules'
               })
@@ -278,75 +321,7 @@ const createSingleSCODocu = () => {
             .ele('title')
               .txt(`${config.manifestOptions.SCOs[0].buildDirName.toUpperCase()}`)
             .up()
-            .ele('classification')
-              .ele('purpose')
-                .ele('source')
-                  .ele('langstring', {
-                    'xml:lang': 'x-none'
-                  })
-                    .txt('LOMv1.0')
-                  .up()
-                .up()
-                .ele('value')
-                  .ele('langstring', {
-                    'xml:lang': 'x-none'
-                  })
-                    .txt('Educational Objective')
-                  .up()
-                .up()
-              .up()
-              .ele('description')
-                .ele('langstring')
-                  .txt('This is the first objective on the SCO')
-                .up()
-              .up()
-            .up()
-            .ele('classification')
-              .ele('purpose')
-                .ele('source')
-                  .ele('langstring', {
-                    'xml:lang': 'x-none'
-                  })
-                    .txt('LOMv1.0')
-                  .up()
-                .up()
-                .ele('value')
-                  .ele('langstring', {
-                    'xml:lang': 'x-none'
-                  })
-                    .txt('Educational Objective')
-                  .up()
-                .up()
-              .up()
-              .ele('description')
-                .ele('langstring')
-                  .txt('This is the second objective on the SCO')
-                .up()
-              .up()
-            .up()
-            .ele('classification')
-              .ele('purpose')
-                .ele('source')
-                  .ele('langstring', {
-                    'xml:lang': 'x-none'
-                  })
-                    .txt('LOMv1.0')
-                  .up()
-                .up()
-                .ele('value')
-                  .ele('langstring', {
-                    'xml:lang': 'x-none'
-                  })
-                    .txt('Educational Objective')
-                  .up()
-                .up()
-              .up()
-              .ele('description')
-                .ele('langstring')
-                  .txt('This is the third objective on the SCO')
-                .up()
-              .up()
-            .up()
+            .import(createObjectives(config.manifestOptions.SCOs[0].objectives))
           .up()
         .up()
       .up()
