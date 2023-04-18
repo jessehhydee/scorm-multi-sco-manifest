@@ -15,10 +15,20 @@
     "manifest",
     "sco"
   ],
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write"
+    ]
+  },
   "author": "Jesse Hyde",
   "license": "MIT",
   "dependencies": {
     "xmlbuilder2": "^3.0.2",
     "zip-a-folder": "^1.1.5"
+  },
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.8.7"
   }
 }
